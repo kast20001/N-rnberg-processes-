@@ -49,6 +49,39 @@ footer {
     background: #333;
     color: #fff;
 }
+ div:has(> blockquote) {
+  background-color: #ededed;
+  margin: 10px auto;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+blockquote p::before {
+  content: "\201C";
+}
+
+blockquote p::after {
+  content: "\201D";
+}
+
+blockquote + p {
+  text-align: right;
+}
+
+h1 {
+    padding: 25px;
+   }
+
+p {
+    padding: 20px;
+    margin-bottom: -20px;
+    margin-top: -20px;
+   }
+h2 {
+    padding: 25px;
+    margin-bottom: -20px;
+    margin-top: -20px;
+       }
 
 </style>
 </head>
