@@ -84,14 +84,20 @@ h2 {
     margin-top: -20px;
        }
 .container {
-  text-align: center; /* Центрирует содержимое контейнера */
-}
-.image {
+  text-align: center;
   display: block;
+  margin: 10 auto;
+  width: 100%;
+  height: auto;
   margin: 0 auto;
-  width: 200px;
-  transform: scale(20);
-  transform-origin: center center;
+}
+
+.same-size-image {
+  width: 400px;
+  height: 450px;
+  object-fit: cover;
+  object-position: center;
+}
 
 </style>
 </head>
@@ -139,7 +145,7 @@ h2 {
         После ареста некоторые подозреваемые, такие как Ялмар Шахт и Альберт Шпеер, оказались в замке Крансберг, где они давали показания вплоть до начала Нюрнбергского процесса. В основном же преступники размещались в лагере на территории курорта Мондорф-ле-Бен в Люксембурге. Американские военные называли этот лагерь “мусорным ящиком” или “зольником” (Ashcan). Место было выбрано неслучайно. Поселение было почти полностью изолировано от остального мира, и потому его было проще охранять. В лагере содержались 86 человек. С мая по август 1945 года они давали показания, причем известно, что на допрос ежедневно уходило около 6 часов.
     </p>
     <div class="container">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Camp_Ashcan_prisoners.jpg" width="700" height="600">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Camp_Ashcan_prisoners.jpg" class = "same-size-image">
     <p>Заключённые лагеря Ashcan: в центре Г. Геринг (август 1945)</p>
     </div>
     <p>
