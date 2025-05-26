@@ -99,6 +99,56 @@ h2 {
   object-position: center;
 }
 
+.question {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+.options {
+            margin: 15px 0;
+        }
+.option {
+            margin: 8px 0;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+.option:hover {
+            background: #f0f0f0;
+        }
+.option.selected {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+.option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+.option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+.feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+.correct-feedback {
+            background: #d4edda;
+            color: #155724;
+        }
+.incorrect-feedback {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+          
 </style>
 </head>
 <body>
@@ -155,6 +205,115 @@ h2 {
         12 августа Эндрюс на машинах скорой помощи вывез 15 нацистов из лагеря и на двух самолетах доставил в Нюрнберг.
     </p>
 </section>
+
+<div id="quiz-container"></div>
+
+<div id="score" class="score"></div>
+
+<script>
+
+    // Данные теста (вопросы и ответы)
+    const quizData = [
+        {
+            question: "1. Кто отказался предоставлять информацию о местоположении нацистов в 1943 году?",
+            options: [
+                "Швейцария",
+                "США",
+                "Китай",
+                "Польша"
+                            ],
+            correctAnswer: 0,
+            feedback: "В 1943 году государства антигитлеровской коалиции обратились к Швеции, Швейцарии, Турции, Португалии, Аргентине, Испании с просьбой предоставить сведения о местонахождении нацистов. Однако четкого ответа они не получили."
+        },
+        {
+            question: "2. Кого не удалось задержать?",
+            options: [
+                "Эриха Редера",
+                "Вальтера Функа",
+                "Рудольфа Гесса",
+                "Мартина Бормана"
+                            ],
+            correctAnswer: 3,
+            feedback: "Бормана так и не смогли найти, поэтому судили заочно."
+        },
+        {
+            question: "3. Кто был начальником лагеря, в котором содержали нацистов до процесса?",
+            options: [
+                "Вильгельм Кейтель",
+                "Вячеслав Молотов",
+                "Георгий Жуков",
+                "Бёртон Эндрюс"
+                            ],
+            correctAnswer: 3,
+            feedback: "Начальником лагеря был назначен американский полковник Бёртон Эндрюс."
+        }
+    ];
+
+    let userAnswers = new Array(quizData.length).fill(null);
+    const quizContainer = document.getElementById('quiz-container');
+
+    // Создаем тест
+    function createQuiz() {
+        quizData.forEach((questionData, index) => {
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question';
+
+            questionElement.innerHTML = `
+                <h3>${questionData.question}</h3>
+                <div class="options">
+                    ${questionData.options.map((option, i) => `
+                        <div class="option" data-question="${index}" data-option="${i}">
+                            ${option}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="feedback" id="feedback-${index}" style="display: none;"></div>
+            `;
+
+            quizContainer.appendChild(questionElement);
+        });
+
+        // Добавляем обработчики выбора ответа
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionIndex = parseInt(this.getAttribute('data-question'));
+                const optionIndex = parseInt(this.getAttribute('data-option'));
+                const questionData = quizData[questionIndex];
+                const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+
+                // Сбрасываем стили для всех вариантов этого вопроса
+                document.querySelectorAll(`.option[data-question="${questionIndex}"]`).forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // Выделяем выбранный вариант
+                this.classList.add('selected');
+                userAnswers[questionIndex] = optionIndex;
+
+                // Проверяем ответ
+                if (optionIndex === questionData.correctAnswer) {
+                    this.classList.add('correct');
+                    feedbackElement.textContent = "✓ Верно! " + questionData.feedback;
+                    feedbackElement.className = "feedback correct-feedback";
+                } else {
+                    this.classList.add('incorrect');
+                    // Показываем правильный ответ
+                    document.querySelector(`.option[data-question="${questionIndex}"][data-option="${questionData.correctAnswer}"]`)
+                        .classList.add('correct');
+                    feedbackElement.textContent = "✗ Неверно. " + questionData.feedback;
+                    feedbackElement.className = "feedback incorrect-feedback";
+                }
+
+                feedbackElement.style.display = 'block';
+            });
+        });
+    }
+
+    // Инициализация теста
+    createQuiz();
+
+</script>
+    
     <footer>
         <p>&copy; 2025 Наш Сайт. Все права защищены. Нами...</p>
 </footer>
