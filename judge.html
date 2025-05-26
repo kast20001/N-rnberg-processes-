@@ -99,6 +99,54 @@ h2 {
   object-position: center;
 }
 
+.question {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+.options {
+            margin: 15px 0;
+        }
+.option {
+            margin: 8px 0;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+.option:hover {
+            background: #f0f0f0;
+        }
+.option.selected {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+.option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+.option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+.feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+.correct-feedback {
+            background: #d4edda;
+            color: #155724;
+        }
+.incorrect-feedback {
+            background: #f8d7da;
+            color: #721c24;
+        }     
 
 </style>
 </head>
@@ -234,6 +282,103 @@ h2 {
   <p>Действия советских прокуроров контролировала из Москвы “Комиссия по Нюрнбергскому процессу” под руководством В.Молотова и А.Вышинского. Однако зачастую указания из столицы приходили с запозданием, из-за чего обвинителям приходилось какое-то время бездействовать. </p>
 </section>
 
+<div id="quiz-container"></div>
+
+<div id="score" class="score"></div>
+
+<script>
+
+    // Данные теста (вопросы и ответы)
+    const quizData = [
+        {
+            question: "1. Кто предствалял Великобританию?",
+            options: [
+                "Джеффри Лоуренс и Норман Биркет",
+                "Фрэнсиса Биддл и Джона Паркер",
+                "Анри Доннедьё де Вабр и Робер Фалько",
+                "Роберт Джексон"
+                            ],
+            correctAnswer: 0,
+            feedback: "Великобританию представляли судьи Джеффри Лоуренс и Норман Биркет"
+        },
+        {
+            question: "2. Какого обвинителя представил СССР?",
+            options: [
+                "Хартли Шоукросс",
+                "Дэвид Максвелл-Файф",
+                "Вячеслав Молотов",
+                "Роман Руденко"
+                            ],
+            correctAnswer: 3,
+            feedback: "Советский Союз представлял Генеральный прокурор Роман Руденко"
+        }
+    ];
+
+    let userAnswers = new Array(quizData.length).fill(null);
+    const quizContainer = document.getElementById('quiz-container');
+
+    // Создаем тест
+    function createQuiz() {
+        quizData.forEach((questionData, index) => {
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question';
+
+            questionElement.innerHTML = `
+                <h3>${questionData.question}</h3>
+                <div class="options">
+                    ${questionData.options.map((option, i) => `
+                        <div class="option" data-question="${index}" data-option="${i}">
+                            ${option}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="feedback" id="feedback-${index}" style="display: none;"></div>
+            `;
+
+            quizContainer.appendChild(questionElement);
+        });
+
+        // Добавляем обработчики выбора ответа
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionIndex = parseInt(this.getAttribute('data-question'));
+                const optionIndex = parseInt(this.getAttribute('data-option'));
+                const questionData = quizData[questionIndex];
+                const feedbackElement = document.getElementById(`feedback-${questionIndex}`);
+
+                // Сбрасываем стили для всех вариантов этого вопроса
+                document.querySelectorAll(`.option[data-question="${questionIndex}"]`).forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // Выделяем выбранный вариант
+                this.classList.add('selected');
+                userAnswers[questionIndex] = optionIndex;
+
+                // Проверяем ответ
+                if (optionIndex === questionData.correctAnswer) {
+                    this.classList.add('correct');
+                    feedbackElement.textContent = "✓ Верно! " + questionData.feedback;
+                    feedbackElement.className = "feedback correct-feedback";
+                } else {
+                    this.classList.add('incorrect');
+                    // Показываем правильный ответ
+                    document.querySelector(`.option[data-question="${questionIndex}"][data-option="${questionData.correctAnswer}"]`)
+                        .classList.add('correct');
+                    feedbackElement.textContent = "✗ Неверно. " + questionData.feedback;
+                    feedbackElement.className = "feedback incorrect-feedback";
+                }
+
+                feedbackElement.style.display = 'block';
+            });
+        });
+    }
+
+    // Инициализация теста
+    createQuiz();
+
+</script>
+   
 <footer>
         <p>&copy; 2025 Наш Сайт. Все права защищены. Нами...</p>
 </footer>
